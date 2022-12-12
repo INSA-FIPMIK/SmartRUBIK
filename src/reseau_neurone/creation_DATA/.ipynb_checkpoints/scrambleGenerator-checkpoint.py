@@ -49,7 +49,7 @@ def main():
     moves = ["U", "D", "F", "B", "R", "L"]
     directions = ["", "'", "2"]
     nb_mvt = 1
-    nb_dataset = 100
+    nb_dataset = 10
     i = 1
     ens_data = pd.DataFrame(dtype='str')
        
@@ -58,7 +58,7 @@ def main():
         ens_data = ens_data.append([(rubik_str, mvt_choisi)])
         i+=1
     
-    ens_data.to_csv('Data.csv')    
+    ens_data.to_csv('/menu/app/Projet_Rubik_cube/data/Creation_Data/Data.csv')    
     print("\nData shape : ", ens_data.shape, "\nSaved in Data.csv...\n")
    
        

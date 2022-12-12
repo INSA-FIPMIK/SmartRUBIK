@@ -978,12 +978,12 @@ screen.geometry("800x800")
 font_perso = ('Times New Roman', 15)
 
 # Images import
-image_scramble = PhotoImage(file='Images/scramble.png')
-image_solve = PhotoImage(file='Images/solve.png')
-image_vision = PhotoImage(file='Images/vision.png')
-image_right = PhotoImage(file='Images/right.png')
-image_left = PhotoImage(file='Images/left.png')
-image_moves = PhotoImage(file='Images/moves.png')
+image_scramble = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/scramble.png')
+image_solve = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/solve.png')
+image_vision = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/vision.png')
+image_right = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/right.png')
+image_left = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/left.png')
+image_moves = PhotoImage(file='menu/app/Projet_Rubik_cube/data/Images/moves.png')
 
 
 # Widgets text
