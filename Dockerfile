@@ -3,11 +3,34 @@ FROM nvcr.io/nvidia/l4t-ml:r32.6.1-py3
 WORKDIR /menu/resources
 COPY ./requirements.txt .
 
+
+#install Vpython
+RUN pip3 install "opencv-python-headless<4.3"\
+    && apt-get install libssl-dev\
+    && pip3 install VPython
+
+#install streamlit
+RUN apt-get install -y locales\
+    && locale-gen en_US.UTF-8\
+    && export LANG=en_US.UTF-8\
+    && export LANGUAGE=en_US:en\
+    && export LC_ALL=en_US.UTF-8\
+    && pip3 install streamlit==1.09
+
+#install Pyserial for Arduino nano
+RUN apt update\
+    && apt-get install python3-tk
+    && pip3 install pyserial
+
+#install Tkinter
+RUN apt update\
+    && apt install python3-tk
+
 RUN pip3 uninstall -y tensorflow \
     && apt-get update \
     && apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran pkg-config \
     && pip3 install -U testresources setuptools==49.6.0 \
-    && pip3 install -U --no-deps future==0.18.2 mock==3.0.5 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.4.0 cython pkgconfig \
+    && pip3 install -U --no-deps numpy==1.19.4 future==0.18.2 mock==3.0.5 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.4.0 cython pkgconfig \
     && env H5PY_SETUP_REQUIRES=0 pip3 install -U h5py==3.1.0 \
     && pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v461 tensorflow==2.7.0+nv22.1
 
@@ -17,9 +40,8 @@ RUN curl https://sh.rustup.rs -sSf > install_rust.sh \
     && apt-get update \
     && apt-get install -y portaudio19-dev \
     && pip3 install setuptools_rust \
-    && rm install_rust.sh \
     && pip3 install -r requirements.txt \
-    && rm requirements.txt
+    && rm install_rust.sh requirements.txt
 
 RUN git clone --recursive https://github.com/dusty-nv/jetson-inference \
     && cd jetson-inference \
@@ -42,7 +64,7 @@ RUN git clone https://github.com/NVIDIA-AI-IOT/jetcam \
 RUN git clone https://github.com/NVIDIA-AI-IOT/trt_pose \
     && cd trt_pose \
     && python3 setup.py install
-
+    
 WORKDIR /menu/app
 
 COPY ./copy/gpio_pin_data.py /usr/local/lib/python3.6/dist-packages/Jetson/GPIO/gpio_pin_data.py

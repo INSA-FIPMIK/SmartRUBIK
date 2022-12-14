@@ -49,7 +49,21 @@ def resol_kociemba (rubik_str):
     rubik_str = rubik_str.replace('b','B')
     
     mvt_choisi = kociemba.solve(rubik_str)
-    #mvt_choisi = mvt_choisi.replace(' ', '')
+    
+    """mvt_choisi = mvt_choisi.replace(" U'","U1")
+    mvt_choisi = mvt_choisi.replace(" D'","D1")
+    mvt_choisi = mvt_choisi.replace(" F'","F1")
+    mvt_choisi = mvt_choisi.replace(" B'","B1")
+    mvt_choisi = mvt_choisi.replace(" R'","R1")
+    mvt_choisi = mvt_choisi.replace(" L'","L1")
+    
+    mvt_choisi = mvt_choisi.replace(" U ","U0")
+    mvt_choisi = mvt_choisi.replace(" D ","D0")
+    mvt_choisi = mvt_choisi.replace(" F ","F0")
+    mvt_choisi = mvt_choisi.replace(" B ","B0")
+    mvt_choisi = mvt_choisi.replace(" R ","R0")
+    mvt_choisi = mvt_choisi.replace(" L ","L0")"""
+    
     
     print("\nresolution via Kociemba : ", mvt_choisi)
     return mvt_choisi
@@ -85,7 +99,7 @@ def resol_inverse (mvt_choisi, nb_mvt):
     mvt_choisi = mvt_choisi.replace('2R','R2')
     mvt_choisi = mvt_choisi.replace('2L','L2')
     
-    print("\nresolution via inverse : ", mvt_choisi)
+    #print("\nresolution via inverse : ", mvt_choisi)
     return mvt_choisi
     
 
@@ -103,20 +117,22 @@ def main():
     
     moves = ["U", "D", "F", "B", "R", "L"]
     directions = ["0", "1", "2"]
-    nb_mvt = 0
-    nb_dataset = 1
+    nb_mvt = 10
+    nb_dataset = 100000
     i = 1
     ens_data = pd.DataFrame(dtype='str')
 
     while i <= nb_dataset :
         mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions)
-        print("Rubik string : ", rubik_str, "\nMouvement choisi : ", mvt_choisi)
+        #print("Rubik string : ", rubik_str, "\nMouvement choisi : ", mvt_choisi)
+        
         mvt_choisi_inverse = resol_inverse(mvt_choisi, nb_mvt)
-        mvt_choisi_kociemba = resol_kociemba(rubik_str)
-        ens_data = ens_data.append([(rubik_str, mvt_choisi)])
+        #mvt_choisi_kociemba = resol_kociemba(rubik_str)
+        
+        ens_data = ens_data.append([(rubik_str, mvt_choisi_inverse)])
         i+=1
     
-    ens_data.to_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data_test.csv')    
+    ens_data.to_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data.csv')    
     print("\nData shape : ", ens_data.shape, "\nSaved in Data.csv...\n")
    
        

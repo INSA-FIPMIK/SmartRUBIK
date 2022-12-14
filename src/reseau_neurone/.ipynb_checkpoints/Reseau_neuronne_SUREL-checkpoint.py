@@ -26,14 +26,14 @@ def main():
         train_kwargs.update(cuda_kwargs)
         test_kwargs.update(cuda_kwargs)
 
-    dataset = pd.read_csv('/menu/app/Projet_Rubik_cube/data/Creation_Data/Data.csv')
+    dataset = pd.read_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data.csv')
     
     #Split du Dataset a 70% pour le training et 30% pour le test
     nb_dataset_train = int(dataset.shape[0] * 0.7)
     nb_dataset_test = int(dataset.shape[0] - nb_dataset_train)
     
-    dataset1 = pd.read_csv('/menu/app/Projet_Rubik_cube/data/Creation_Data/Data.csv', header = nb_dataset_train)
-    dataset2 = pd.read_csv('/menu/app/Projet_Rubik_cube/data/Creation_Data/Data.csv', header = nb_dataset_test)
+    dataset1 = pd.read_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data.csv', header = nb_dataset_train)
+    dataset2 = pd.read_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data.csv', header = nb_dataset_test)
     
     x_train = dataset1.iloc[:,1]
     y_train = dataset1.iloc[:,2]
