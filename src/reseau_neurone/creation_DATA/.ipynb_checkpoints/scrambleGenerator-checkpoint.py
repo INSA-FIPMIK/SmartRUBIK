@@ -15,7 +15,6 @@ def gen_scramble(nb_mvt, moves, directions):
     # Make array of arrays that represent moves ex. U' = ['U', "'"]
     mvt_choisi = valid([[random.choice(moves), random.choice(directions)] for x in range(nb_mvt)], moves)
     cube = scramble(mvt_choisi, nb_mvt)
-    print(mvt_choisi)
     # Format scramble to a string with movecount
     return mvt_choisi, cube
 
@@ -35,41 +34,59 @@ def valid(ar, moves):
 
 
 
-def resol_kociemba (rubik_str_color):
+def resol_kociemba (rubik_str):
     '''Resolution de la chaine de caractere via Kociemba
     rubik_str_color <str> : chaine de definition du rubik cube melange'''
     
     #----------Remplacement des couleurs en commandes Kociemba--------------
     # On suppose que le rubik's cube soit posé avec la face blanche en haut, la face rouge a droite
 
-    rubik_str_color = rubik_str_color.replace('w','U')
-    rubik_str_color = rubik_str_color.replace('r','R')
-    rubik_str_color = rubik_str_color.replace('g','F')
-    rubik_str_color = rubik_str_color.replace('y','D')
-    rubik_str_color = rubik_str_color.replace('o','L')
-    rubik_str_color = rubik_str_color.replace('b','B')
+    rubik_str = rubik_str.replace('w','U')
+    rubik_str = rubik_str.replace('r','R')
+    rubik_str = rubik_str.replace('g','F')
+    rubik_str = rubik_str.replace('y','D')
+    rubik_str = rubik_str.replace('o','L')
+    rubik_str = rubik_str.replace('b','B')
     
-    mvt_choisi = kociemba.solve(rubik_str_color)
-    mvt_choisi = mvt_choisi.replace(' ', '')
+    mvt_choisi = kociemba.solve(rubik_str)
+    #mvt_choisi = mvt_choisi.replace(' ', '')
+    
+    print("\nresolution via Kociemba : ", mvt_choisi)
     return mvt_choisi
 
 
-def resol_inverse (rubik_str):
+def resol_inverse (mvt_choisi, nb_mvt):
     '''Resolution de la chaine de caractere par l inverse des mouvements
     rubik_str_color <str> : chaine de definition du rubik cube melange'''
+       
+    #retournement des mouvements 
+    mvt_choisi = np.array(mvt_choisi)
+    mvt_choisi = np.flip(mvt_choisi)
+    mvt_choisi = ''.join(str(mvt_choisi[x][0]) + str(mvt_choisi[x][1]) + ' ' for x in range(len(mvt_choisi)))
 
-    #retournement des mouvements
-    string = ""
-    for i in rubik_str:
-        string = string + i
+    mvt_choisi = mvt_choisi.replace('1U','U0')
+    mvt_choisi = mvt_choisi.replace('1D','D0')
+    mvt_choisi = mvt_choisi.replace('1F','F0')
+    mvt_choisi = mvt_choisi.replace('1B','B0')
+    mvt_choisi = mvt_choisi.replace('1R','R0')
+    mvt_choisi = mvt_choisi.replace('1L','L0')
     
+    mvt_choisi = mvt_choisi.replace('0U','U1')
+    mvt_choisi = mvt_choisi.replace('0D','D1')
+    mvt_choisi = mvt_choisi.replace('0F','F1')
+    mvt_choisi = mvt_choisi.replace('0B','B1')
+    mvt_choisi = mvt_choisi.replace('0R','R1')
+    mvt_choisi = mvt_choisi.replace('0L','L1')
     
-    string = string.replace('L','L')
-    string = string.replace('r','R')
-    string = string.replace('g','F')
-    string = string.replace('y','D')
-    string = string.replace('o','L')
-    string = string.replace('b','B')
+    mvt_choisi = mvt_choisi.replace('2U','U2')
+    mvt_choisi = mvt_choisi.replace('2D','D2')
+    mvt_choisi = mvt_choisi.replace('2F','F2')
+    mvt_choisi = mvt_choisi.replace('2B','B2')
+    mvt_choisi = mvt_choisi.replace('2R','R2')
+    mvt_choisi = mvt_choisi.replace('2L','L2')
+    
+    print("\nresolution via inverse : ", mvt_choisi)
+    return mvt_choisi
     
 
 
@@ -82,18 +99,20 @@ def main():
     ens_data <array pandas> : dataset sous forme de array pandas
     mvt_choisi <str> : mouvement d une combinaison 
     rubik_str <str> : definition du rubik cube
- '''
+    '''
     
     moves = ["U", "D", "F", "B", "R", "L"]
-    directions = ["", "1", "2"]
-    nb_mvt = 10
+    directions = ["0", "1", "2"]
+    nb_mvt = 0
     nb_dataset = 1
     i = 1
     ens_data = pd.DataFrame(dtype='str')
-   
+
     while i <= nb_dataset :
         mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions)
-        mvt_choisi = resol_kociemba(rubik_str)
+        print("Rubik string : ", rubik_str, "\nMouvement choisi : ", mvt_choisi)
+        mvt_choisi_inverse = resol_inverse(mvt_choisi, nb_mvt)
+        mvt_choisi_kociemba = resol_kociemba(rubik_str)
         ens_data = ens_data.append([(rubik_str, mvt_choisi)])
         i+=1
     
