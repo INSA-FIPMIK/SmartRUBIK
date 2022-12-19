@@ -29,14 +29,15 @@
 
 ### Dossier réseau de neuronne :         
 - Dans le dossier creation_Data : 
-    scrambleImage.py : sous programme générant à partir d'une chaîne de mouvements le cube mélangé.
-    scrambleGenerator.py : programme main à lancer pour recréer le Dataset enregistré dans /data/Creation_Data/Data.csv
-        Paramètres d'entrée : 
-            nombre de combinaison présente dans le Dataset (nb_dataset)
-            nombre de mouvements pour chaque combinaison (nb_mvt)
-            le choix de résolution : via les mouvements inverse généré ou via la bibliothèque Kociemba
+scrambleImage.py : sous programme générant à partir d'une chaîne de mouvements le cube mélangé.
+scrambleGenerator.py : programme main à lancer pour recréer le Dataset enregistré dans /data/Creation_Data/Data.csv
+- Paramètres d'entrée : 
+nombre de combinaison présente dans le Dataset (nb_dataset)
+nombre de mouvements pour chaque combinaison (nb_mvt)
+le choix de résolution : via les mouvements inverse généré ou via la bibliothèque Kociemba
 
 Code inspiré du github https://github.com/BenGotts/Python-Rubiks-Cube-Scrambler/tree/f3f717b9c6039a0113b6369e741c35c27f10516a
+
 - Dans le dossier src:
     sous programme de Reseau_neurone_SUREL.py programmé en orienté objet
 - Reseau_neurone_SUREL.py : réseau de neuronne prenant comme données d'entrainements et de test /data/Creation_Data/Data.csv généré par le scrambleGenerator.py
