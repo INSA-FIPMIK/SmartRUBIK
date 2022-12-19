@@ -16,8 +16,9 @@
 
 
 # Dossier src
-## 3 parties distinctes : le réseau de neuronne, le programme principal et la visualisation grâce aux caméras
-### Programmes principal : affiche l'interface homme machine pour mélanger le rubik's cube, effectuer des mouvements manuellement, résoudre le rubik's cube
+## 3 parties distinctes : réseau de neuronne, pg principal et visualisateur caméra
+### Programmes principal : 
+- Affiche l'interface homme machine pour mélanger le rubik's cube, effectuer des mouvements manuellement, résoudre le rubik's cube
 
 ### Visualisation : interface de communication avec les caméras.
 - En entrée  : une capture de l'état du rubik's cube
