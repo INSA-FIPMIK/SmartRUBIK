@@ -12,17 +12,16 @@ import kociemba
 
 
 def gen_scramble(nb_mvt, moves, directions):
+    '''Generation des mouvements de manière aléatoire suivants les arrays mouvements et directions'''
     # Make array of arrays that represent moves ex. U' = ['U', "'"]
     mvt_choisi = valid([[random.choice(moves), random.choice(directions)] for x in range(nb_mvt)], moves)
     cube = scramble(mvt_choisi, nb_mvt)
-    # Format scramble to a string with movecount
     return mvt_choisi, cube
 
 
 
 def valid(ar, moves):
-    # Check if Move behind or 2 behind is the same as the random move
-    # this gets rid of 'R R2' or 'R L R2' or similar for all moves
+    '''Suppression des redondance tels que  : R R2 à la suite '''
     for x in range(1, len(ar)):
         while ar[x][0] == ar[x-1][0]:
             ar[x][0] = random.choice(moves)
@@ -133,6 +132,7 @@ def main():
         ens_data = ens_data.append([(rubik_str, mvt_choisi)])
         i+=1
     
+    #Sauvegarde du fichier
     ens_data.to_csv('../../../data/Creation_Data/Data.csv')    
     print("\nData shape : ", ens_data.shape, "\nSaved in Data.csv...\n")
    
