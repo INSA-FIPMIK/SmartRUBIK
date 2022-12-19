@@ -50,7 +50,7 @@ def resol_kociemba (rubik_str):
     
     mvt_choisi = kociemba.solve(rubik_str)
     
-    """mvt_choisi = mvt_choisi.replace(" U'","U1")
+    mvt_choisi = mvt_choisi.replace(" U'","U1")
     mvt_choisi = mvt_choisi.replace(" D'","D1")
     mvt_choisi = mvt_choisi.replace(" F'","F1")
     mvt_choisi = mvt_choisi.replace(" B'","B1")
@@ -62,7 +62,7 @@ def resol_kociemba (rubik_str):
     mvt_choisi = mvt_choisi.replace(" F ","F0")
     mvt_choisi = mvt_choisi.replace(" B ","B0")
     mvt_choisi = mvt_choisi.replace(" R ","R0")
-    mvt_choisi = mvt_choisi.replace(" L ","L0")"""
+    mvt_choisi = mvt_choisi.replace(" L ","L0")
     
     
     print("\nresolution via Kociemba : ", mvt_choisi)
@@ -118,21 +118,22 @@ def main():
     moves = ["U", "D", "F", "B", "R", "L"]
     directions = ["0", "1", "2"]
     nb_mvt = 10
-    nb_dataset = 100000
+    nb_dataset = 100
     i = 1
     ens_data = pd.DataFrame(dtype='str')
+    choix = 0
 
     while i <= nb_dataset :
         mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions)
-        #print("Rubik string : ", rubik_str, "\nMouvement choisi : ", mvt_choisi)
+        if choix == 0:
+            mvt_choisi = resol_inverse(mvt_choisi, nb_mvt)
+        else :
+            mvt_choisi = resol_kociemba(rubik_str)
         
-        mvt_choisi_inverse = resol_inverse(mvt_choisi, nb_mvt)
-        #mvt_choisi_kociemba = resol_kociemba(rubik_str)
-        
-        ens_data = ens_data.append([(rubik_str, mvt_choisi_inverse)])
+        ens_data = ens_data.append([(rubik_str, mvt_choisi)])
         i+=1
     
-    ens_data.to_csv('/menu/app/Documents/SmartRUBIK/data/Creation_Data/Data.csv')    
+    ens_data.to_csv('../../../data/Creation_Data/Data.csv')    
     print("\nData shape : ", ens_data.shape, "\nSaved in Data.csv...\n")
    
        

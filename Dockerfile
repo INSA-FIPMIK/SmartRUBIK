@@ -19,7 +19,7 @@ RUN apt-get install -y locales\
 
 #install Pyserial for Arduino nano
 RUN apt update\
-    && apt-get install python3-tk
+    && apt-get install python3-tk\
     && pip3 install pyserial
 
 #install Tkinter
