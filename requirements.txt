@@ -7,4 +7,5 @@ netron
 pycocotools==2.0.4
 keras==2.7.0rc2
 pyserial
+streamlit==0.62
 kociemba

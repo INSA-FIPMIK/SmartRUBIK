@@ -3,29 +3,6 @@ FROM nvcr.io/nvidia/l4t-ml:r32.6.1-py3
 WORKDIR /menu/resources
 COPY ./requirements.txt .
 
-
-#install Vpython
-RUN pip3 install "opencv-python-headless<4.3"\
-    && apt-get install libssl-dev\
-    && pip3 install VPython
-
-#install streamlit
-RUN apt-get install -y locales\
-    && locale-gen en_US.UTF-8\
-    && export LANG=en_US.UTF-8\
-    && export LANGUAGE=en_US:en\
-    && export LC_ALL=en_US.UTF-8\
-    && pip3 install streamlit==1.09
-
-#install Pyserial for Arduino nano
-RUN apt update\
-    && apt-get install python3-tk\
-    && pip3 install pyserial
-
-#install Tkinter
-RUN apt update\
-    && apt install python3-tk
-
 RUN pip3 uninstall -y tensorflow \
     && apt-get update \
     && apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran pkg-config \
@@ -65,6 +42,16 @@ RUN git clone https://github.com/NVIDIA-AI-IOT/trt_pose \
     && cd trt_pose \
     && python3 setup.py install
     
+RUN apt-get update \
+    && apt-get install -y libssl-dev \
+    && . $HOME/.cargo/env \
+    && pip3 install VPython
+
+#install Pyserial for Arduino nano
+RUN apt-get update \
+    && apt-get install -y python3-tk
+
+
 WORKDIR /menu/app
 
 COPY ./copy/gpio_pin_data.py /usr/local/lib/python3.6/dist-packages/Jetson/GPIO/gpio_pin_data.py
