@@ -116,8 +116,8 @@ def main():
     
     moves = ["U", "D", "F", "B", "R", "L"]
     directions = ["0", "1", "2"]
-    nb_mvt = 10
-    nb_dataset = 100
+    nb_mvt = int(input("Nombre de mvt :"))
+    nb_dataset = int(input("Taille du Dataset :"))
     i = 1
     ens_data = pd.DataFrame(dtype='str')
     choix = 0
