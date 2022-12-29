@@ -8,7 +8,6 @@ class CustomDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         item = self.preprocess(self.data[idx])
-        print(item)
         return item
 
     def __len__(self):
@@ -60,15 +59,3 @@ class CustomDataset(torch.utils.data.Dataset):
         
         data_dict['target'] = data[1]
         return data_dict
-    
-    def split(self):
-        #Split du Dataset 70% training / 30% test
-        
-        nb_dataset_train = int(self.data.shape[0] * 0.7)
-        nb_dataset_test = int(self.data.shape[0] - nb_dataset_train)
-
-        dataset1 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_train)
-        dataset2 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_test)
-
-        print("Definition du dataset :\n   Shape of training: ", dataset1.shape, "\n   Shape of test: ", dataset2.shape, "\n")
-        return dataset1, dataset2

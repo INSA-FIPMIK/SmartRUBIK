@@ -119,17 +119,17 @@ def main():
     nb_mvt = int(input("Nombre de mvt :"))
     nb_dataset = int(input("Taille du Dataset :"))
     i = 1
-    ens_data = pd.DataFrame(dtype='str')
+    ens_data = pd.DataFrame(columns=['mvt','rbk_str'], dtype='str')
     choix = 0
 
     while i <= nb_dataset :
-        mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions)
+        mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions) #creation d'un mélange avec ça combinaison et les mouvements effectue
         if choix == 0:
-            mvt_choisi = resol_inverse(mvt_choisi, nb_mvt)
+            mvt_choisi = resol_inverse(mvt_choisi, nb_mvt) #retournement des mouvements
         else :
-            mvt_choisi = resol_kociemba(rubik_str)
+            mvt_choisi = resol_kociemba(rubik_str) #resolution du melange via Kociemba
         
-        ens_data = ens_data.append([(rubik_str, mvt_choisi)])
+        ens_data.loc[i] = mvt_choisi, rubik_str
         i+=1
     
     #Sauvegarde du fichier

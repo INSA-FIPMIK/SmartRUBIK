@@ -11,7 +11,22 @@ from src.trainer import Trainer
 from src.model import Net
 
 #------------- Ce programme vise a resoudre le rubik s cube via un reseau de neuronne-------------------
-          
+
+def split():
+    data = pd.read_csv('../../data/Creation_Data/Data.csv')
+    
+    #Split du Dataset 70% training / 30% test
+    nb_dataset_train = int(data.shape[0] * 0.7)
+    nb_dataset_test = int(data.shape[0] - nb_dataset_train)
+
+    dataset1 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_train, names = ['mvt','rbk_str'])
+    dataset2 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_test, names = ['mvt','rbk_str'])
+
+    print("Definition du dataset :\n   Shape of training: ", dataset1.shape, "\n   Shape of test: ", dataset2.shape, "\n")
+    return dataset1, dataset2
+
+
+
 def main():
     
     num_epochs = 10
@@ -41,18 +56,19 @@ def main():
         test_kwargs.update(cuda_kwargs)
  
 
-    dataset = pd.read_csv('../../data/Creation_Data/Data.csv')
-    customdataset = CustomDataset(dataset)
-    dataset1, dataset2 = customdataset.split()
-
+    dataset1, dataset2 = split()
+    
+    
     train_loader = torch.utils.data.DataLoader(
         CustomDataset(dataset1),
         **train_kwargs
     )
+    train_loader.__iter__()
     test_loader = torch.utils.data.DataLoader(
         CustomDataset(dataset2),
         **test_kwargs
     )
+
     
     model = Net().to(device)
     optimizer = optim.Adadelta(model.parameters(), lr=1.0)
@@ -60,14 +76,11 @@ def main():
     trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
 
     
-    
     #Training
     trainer.fit(train_loader, test_loader)
     torch.save(model.state_dict(), "'../../data/reseau_neuronne/res.pt'")
 
-    
-    
-    
+
     #Prediction
     rubik_str = pd.read_csv('../../data/Creation_Data/prediction.csv')
     customprediction = CustomDataset(rubik_str)
