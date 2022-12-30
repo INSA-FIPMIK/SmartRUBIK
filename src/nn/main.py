@@ -6,9 +6,9 @@ from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 import pandas as pd
 import torch.optim as optim
-from src.custom_dataset import CustomDataset
-from src.trainer import Trainer
-from src.model import Net
+from preprocess.custom_dataset import CustomDataset
+from trainer import Trainer
+from models.model import Net
 
 #------------- Ce programme vise a resoudre le rubik s cube via un reseau de neuronne-------------------
 
@@ -77,7 +77,7 @@ def main():
     
     #Training
     trainer.fit(train_loader, test_loader)
-    torch.save(model.state_dict(), '../../data/nn/res.pt')
+    torch.save(model.state_dict(), '../../models/res.pt')
 
 
     #Prediction

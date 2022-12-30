@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 
-from src.model import Net
+from models.model import Net
 
 class Trainer ():
     def __init__(self, model, optimizer, scheduler, num_epochs, device, load_from_checkpoint=None):
