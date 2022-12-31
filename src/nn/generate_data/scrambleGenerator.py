@@ -1,22 +1,36 @@
 import random
 import sys
-from scrambleImage import scramble
 import os
 import csv
+import tqdm
+import shutil
+
 import numpy as np
 import pandas as pd
 import kociemba
 
+from scrambleImage import scramble
 
 '''Ce Programme genere aleatoirement des combinaisons de cube et sa resolution'''
 
 
-def gen_scramble(nb_mvt, moves, directions):
-    '''Generation des mouvements de manière aléatoire suivants les arrays mouvements et directions'''
+def gen_scramble(nb_mvt, moves, directions, choice):
+    '''Generation des mouvements de manière aléatoire suivants les arrays mouvements et directions puis résolution'''
     # Make array of arrays that represent moves ex. U' = ['U', "'"]
     mvt_choisi = valid([[random.choice(moves), random.choice(directions)] for x in range(nb_mvt)], moves)
-    cube = scramble(mvt_choisi, nb_mvt)
-    return mvt_choisi, cube
+    resol_moves = []
+    cube_states = []
+    for _ in range(len(mvt_choisi)):
+        cube = scramble(mvt_choisi, nb_mvt)
+        if choice == 0:
+            mvt_resolv = resol_inverse(mvt_choisi, nb_mvt) #retournement des mouvements
+        else:
+            mvt_resolv = resol_kociemba(rubik_str) #resolution du melange via Kociemba
+        resol_moves.append(mvt_resolv)
+        cube_states.append(cube)
+        mvt_choisi = mvt_choisi[:-1]
+        nb_mvt -= 1
+    return resol_moves, cube_states
 
 
 
@@ -119,24 +133,38 @@ def main():
     nb_mvt = int(input("Nombre de mvt :"))
     nb_dataset = int(input("Taille du Dataset :"))
     i = 1
-    ens_data = pd.DataFrame(columns=['mvt','rbk_str'], dtype='str')
-    choix = 0
+    choice = 0
 
+    # create datafrmae to store results
+    ens_data = pd.DataFrame(columns=['mvt','rbk_str'], dtype='str')
+    write_idx = 0
+    file_idx = 0
+    dir_name = "../../../data/generated_data"
+    # create or empty data directory
+    if os.path.isdir(dir_name):
+        shutil.rmtree(dir_name)
+        os.mkdir(dir_name)
+    else:
+        os.mkdir(dir_name)
+    # create progress bar
+    outer = tqdm.tqdm(total=nb_dataset, desc='Generations', position=0)
+
+    # generate data
     while i <= nb_dataset :
-        mvt_choisi, rubik_str = gen_scramble(nb_mvt, moves, directions) #creation d'un mélange avec ça combinaison et les mouvements effectue
-        if choix == 0:
-            mvt_choisi = resol_inverse(mvt_choisi, nb_mvt) #retournement des mouvements
-        else :
-            mvt_choisi = resol_kociemba(rubik_str) #resolution du melange via Kociemba
-        
-        ens_data.loc[i] = mvt_choisi, rubik_str
-        i+=1
-    
-    #Sauvegarde du fichier
-    ens_data.to_csv('../../../data/Creation_Data/Data.csv')    
-    print("\nData shape : ", ens_data.shape, "\nSaved in Data.csv...\n")
-   
-       
+        mvt_resolv, rubik_str = gen_scramble(nb_mvt, moves, directions, choice) #creation d'un mélange avec ça combinaison et les mouvements effectue
+        for j in range(len(mvt_resolv)):
+            ens_data.loc[write_idx] = mvt_resolv[j], rubik_str[j]
+            i += 1
+            write_idx += 1
+        outer.update(j + 1)
+        if (i - 1) % 5000 == 0 or i > nb_dataset:
+            #Sauvegarde du fichier
+            ens_data.to_csv(os.path.join(dir_name, f'data{file_idx}.csv'))    
+            outer.write(f"Saving generated data of shape {ens_data.shape} in data{file_idx}.csv...")
+            ens_data = pd.DataFrame(columns=['mvt','rbk_str'], dtype='str')
+            write_idx = 0
+            file_idx += 1
+      
     
 if __name__ == '__main__':
     main()
