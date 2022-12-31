@@ -75,7 +75,7 @@ def main():
     
     model = Net().to(device)
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
-    scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
+    scheduler = StepLR(optimizer, step_size=1, gamma=1)
     trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
 
     
