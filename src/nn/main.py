@@ -1,37 +1,42 @@
 from __future__ import print_function
 import argparse
+import glob
+import os
+
 import numpy as np
 import torch
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 import pandas as pd
 import torch.optim as optim
+from sklearn.model_selection import train_test_split
+
 from preprocess.custom_dataset import CustomDataset
 from trainer import Trainer
 from models.model import Net
 
 #------------- Ce programme vise a resoudre le rubik s cube via un reseau de neuronne-------------------
 
+
 def split():
-    data = pd.read_csv('../../data/Creation_Data/Data.csv')
-    
-    #Split du Dataset 70% training / 30% test
-    nb_dataset_train = int(data.shape[0] * 0.7)
-    nb_dataset_test = int(data.shape[0] - nb_dataset_train)
+    path = '../../data/generated_data/'
+    all_files = glob.glob(os.path.join(path , "*.csv"))
+    li = []
+    for filename in all_files:
+        df = pd.read_csv(filename, index_col=None, header=0)
+        li.append(df)
+    dataset = pd.concat(li, axis=0, ignore_index=True)
 
-    dataset1 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_train, names = ['mvt','rbk_str'])
-    dataset2 = pd.read_csv('../../data/Creation_Data/Data.csv', header = nb_dataset_test, names = ['mvt','rbk_str'])
-
-    print("Definition du dataset :\n   Shape of training: ", dataset1.shape, "\n   Shape of test: ", dataset2.shape, "\n")
-    return dataset1, dataset2
-
+    train, test = train_test_split(dataset, test_size=0.2)
+    print(f"Train set: size = {len(train)}")
+    print(f"Test set: size = {len(test)}")
+    return train, test
 
 
 def main():
-    
     num_epochs = 10
     
-    #configuration Pytorch (utilisation GPU Jetson nano)
+    #configuration Pytorch (utilisation GPU si possible)
     use_cuda = torch.cuda.is_available()
     torch.manual_seed(0)
     use_cuda = torch.cuda.is_available()
@@ -40,7 +45,6 @@ def main():
     else:
         device = torch.device("cpu")   
     print(f"Using device: {device}")
-
     
     
     #Configuration Data / Preprocessing
@@ -70,7 +74,7 @@ def main():
 
     
     model = Net().to(device)
-    optimizer = optim.Adadelta(model.parameters(), lr=1.0)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = StepLR(optimizer, step_size=1, gamma=0.7)
     trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
 

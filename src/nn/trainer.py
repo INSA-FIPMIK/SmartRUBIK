@@ -24,9 +24,9 @@ class Trainer ():
             self.optimizer.zero_grad()
             data, target = train_batch['rubik_str'].to(self.device), train_batch['target'].to(self.device)
             output = self.model(data.flatten(1))
-            loss = F.nll_loss(output, target) #loss est un torch.Tensor
+            loss = F.cross_entropy(output, target) #loss est un torch.Tensor
             loss.backward()
-            if batch_idx % 10 == 0:
+            if batch_idx % 100 == 0:
                 print(f"Train Epoch: {epoch} [{batch_idx * len(data)}/{len(train_loader.dataset)}" \
                       f"({100. * batch_idx / len(train_loader):.0f}%)]\tLoss: {loss.item():.6f}")
             self.optimizer.step()
