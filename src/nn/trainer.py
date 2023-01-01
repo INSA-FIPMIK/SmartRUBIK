@@ -61,7 +61,6 @@ class Trainer ():
     
     def fit (self, train_loader, test_loader):
         for epoch in range(1, self.num_epochs):
-            self.test(test_loader)
             self.training_epochs(epoch, train_loader)
             self.test(test_loader)
             self.scheduler.step()
