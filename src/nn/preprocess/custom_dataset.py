@@ -58,7 +58,7 @@ class CustomDataset(torch.utils.data.Dataset):
         data_dict['rubik_str'] = torch.Tensor(rubik_str).long()
         
         target = data['mvt']
-        target = [24] + [self.mv2float[elmt] for elmt in target.split()]
+        target = [24] + [self.mv2float[elmt] for elmt in target.split()] + [25]
         target += [-100] * (100 - len(target))
         # only take first move as target
         #data_dict['target'] = target[0]

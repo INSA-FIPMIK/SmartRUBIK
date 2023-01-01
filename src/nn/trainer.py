@@ -32,30 +32,40 @@ class Trainer ():
                       f"({100. * batch_idx / len(train_loader):.0f}%)]\tLoss: {loss.item():.6f}")
             self.optimizer.step()
     
-    
     def test(self, test_loader):
         self.model.eval()
-        correct = 0
+        correct_elmts = 0
+        correct_seqs = 0
+        total_elmts = 0
+        total_seqs = 0
         with torch.no_grad():
             for test_batch in test_loader:
                 data, target = test_batch['rubik_str'].to(self.device), test_batch['target'].to(self.device)
                 outputs = self.model(data.flatten(1), target)
                 self.test_loss += F.cross_entropy(outputs.logits.view(-1, self.vocab_size), target.view(-1), reduction='sum').item()  # sum up batch loss
-                pred = outputs.logits.argmax(dim=-1, keepdim=True)  # get the index of the max log-probability
-                correct += pred.eq(target.view_as(pred)).sum().item()
+                pred = outputs.logits.argmax(dim=-1)# get the index of the max log-probability
+                correct_elmts += (pred == target).sum()
+                total_elmts += len(torch.where(target != -100)[0])
+                correct_seqs += ((pred == target).sum(dim=-1) == pred.size(-1)).sum()
+                total_seqs += len(target)
+        self.test_loss /= total_elmts
 
-        self.test_loss /= len(test_loader.dataset)
+        print(f"\nTest set: Average loss: {self.test_loss:.4f}, " \
+            f"Pred. Accuracy: {correct_elmts}/{total_elmts}: {correct_elmts/total_elmts:.0f}, " \
+            f"Seq. Accuracy: {correct_seqs}/{total_seqs}: {correct_seqs/total_seqs:.0f}\n")
 
-        print(f"\nTest set: Average loss: {self.test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)}" \
-              f"({100. * correct / len(test_loader.dataset):.0f}%)\n")
+        if self.test_loss < self.min_val_loss:
+            print("Saving model...")
+            torch.save(self.model.state_dict(), '../../models/nn.pt')
+            self.min_val_loss = self.test_loss
     
     def fit (self, train_loader, test_loader):
         for epoch in range(1, self.num_epochs):
+            self.test(test_loader)
             self.training_epochs(epoch, train_loader)
             self.test(test_loader)
             self.scheduler.step()
      
-        
     def predict (self, predict_loader):
         self.model.eval()
         with torch.no_grad():

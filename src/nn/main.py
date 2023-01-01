@@ -35,7 +35,7 @@ def split():
 
 
 def main():
-    num_epochs = 10
+    num_epochs = 20
     
     #configuration Pytorch (utilisation GPU si possible)
     use_cuda = torch.cuda.is_available()
@@ -79,11 +79,8 @@ def main():
     scheduler = StepLR(optimizer, step_size=1, gamma=1)
     trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
 
-    
     #Training
     trainer.fit(train_loader, test_loader)
-    torch.save(model.state_dict(), '../../models/res.pt')
-
 
     #Prediction
     rubik_str = pd.read_csv('../../data/Creation_Data/prediction.csv')
