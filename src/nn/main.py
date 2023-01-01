@@ -28,7 +28,7 @@ def split():
     dataset = pd.concat(li, axis=0, ignore_index=True)
     dataset = dataset.drop_duplicates()
 
-    train, test = train_test_split(dataset, test_size=0.2)
+    train, test = train_test_split(dataset, test_size=0.2, shuffle=True)
     print(f"Train set: size = {len(train)}")
     print(f"Test set: size = {len(test)}")
     return train, test
@@ -44,12 +44,12 @@ def main():
     if use_cuda:
         device = torch.device("cuda")
     else:
-        device = torch.device("cpu")   
+        device = torch.device("cpu") 
     print(f"Using device: {device}")
     
     
     #Configuration Data / Preprocessing
-    train_kwargs = {'batch_size': 64}
+    train_kwargs = {'batch_size': 128}
     test_kwargs = {'batch_size': 4096}
     
     if use_cuda:
@@ -75,7 +75,7 @@ def main():
 
     
     model = Net().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = optim.Adam(model.parameters(), lr=1e-4)
     scheduler = StepLR(optimizer, step_size=1, gamma=1)
     trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
 

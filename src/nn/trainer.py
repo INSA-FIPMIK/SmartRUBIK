@@ -17,14 +17,15 @@ class Trainer ():
         self.model.to(self.device)
         self.min_val_loss = 100
         self.test_loss = 0
+        self.vocab_size = 27
         
     def training_epochs (self, epoch, train_loader):
         self.model.train()
         for batch_idx, train_batch in enumerate(train_loader):
             self.optimizer.zero_grad()
             data, target = train_batch['rubik_str'].to(self.device), train_batch['target'].to(self.device)
-            output = self.model(data.flatten(1))
-            loss = F.cross_entropy(output, target) #loss est un torch.Tensor
+            outputs = self.model(data.flatten(1), target)
+            loss = outputs.loss
             loss.backward()
             if batch_idx % 100 == 0:
                 print(f"Train Epoch: {epoch} [{batch_idx * len(data)}/{len(train_loader.dataset)}" \
@@ -32,15 +33,15 @@ class Trainer ():
             self.optimizer.step()
     
     
-    def test (self, test_loader):
+    def test(self, test_loader):
         self.model.eval()
         correct = 0
         with torch.no_grad():
             for test_batch in test_loader:
                 data, target = test_batch['rubik_str'].to(self.device), test_batch['target'].to(self.device)
-                output = self.model(data.flatten(1))
-                self.test_loss += F.cross_entropy(output, target, reduction='sum').item()  # sum up batch loss
-                pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+                outputs = self.model(data.flatten(1), target)
+                self.test_loss += F.cross_entropy(outputs.logits.view(-1, self.vocab_size), target.view(-1), reduction='sum').item()  # sum up batch loss
+                pred = outputs.logits.argmax(dim=-1, keepdim=True)  # get the index of the max log-probability
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
         self.test_loss /= len(test_loader.dataset)
