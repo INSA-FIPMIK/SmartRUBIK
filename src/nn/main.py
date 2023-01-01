@@ -2,6 +2,7 @@ from __future__ import print_function
 import argparse
 import glob
 import os
+import random
 
 import numpy as np
 import torch
@@ -14,6 +15,11 @@ from sklearn.model_selection import train_test_split
 from preprocess.custom_dataset import CustomDataset
 from trainer import Trainer
 from models.model import Net
+
+random.seed(0)
+np.random.seed(0)
+torch.manual_seed(0)
+torch.use_deterministic_algorithms(True)
 
 #------------- Ce programme vise a resoudre le rubik s cube via un reseau de neuronne-------------------
 
