@@ -26,6 +26,7 @@ def split():
         df = pd.read_csv(filename, index_col=None, header=0)
         li.append(df)
     dataset = pd.concat(li, axis=0, ignore_index=True)
+    dataset = dataset.drop_duplicates()
 
     train, test = train_test_split(dataset, test_size=0.2)
     print(f"Train set: size = {len(train)}")
