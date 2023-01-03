@@ -19,7 +19,6 @@ from models.model import Net
 random.seed(0)
 np.random.seed(0)
 torch.manual_seed(0)
-torch.use_deterministic_algorithms(True)
 
 #------------- Ce programme vise a resoudre le rubik s cube via un reseau de neuronne-------------------
 
@@ -41,7 +40,7 @@ def split():
 
 
 def main():
-    num_epochs = 20
+    num_epochs = 40
     
     #configuration Pytorch (utilisation GPU si possible)
     use_cuda = torch.cuda.is_available()
@@ -81,9 +80,16 @@ def main():
 
     
     model = Net().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=2e-4)
     scheduler = StepLR(optimizer, step_size=1, gamma=1)
-    trainer = Trainer(model, optimizer, scheduler, num_epochs, device)
+    trainer = Trainer(
+        model,
+        optimizer,
+        scheduler,
+        num_epochs,
+        device,
+        load_from_checkpoint='../../models/nn.pt'
+    )
 
     #Training
     trainer.fit(train_loader, test_loader)

@@ -1,15 +1,19 @@
+import os
+
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
 
 from models.model import Net
 
+
 class Trainer ():
     def __init__(self, model, optimizer, scheduler, num_epochs, device, load_from_checkpoint=None):
         self.model = model
         if load_from_checkpoint:
-            print("Loading checkpoint...")
-            self.model.load_state_dict(torch.load(load_from_checkpoint))
+            if os.path.isfile(load_from_checkpoint):
+                print("Loading checkpoint...")
+                self.model.load_state_dict(torch.load(load_from_checkpoint))
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.num_epochs = num_epochs
@@ -43,16 +47,19 @@ class Trainer ():
                 data, target = test_batch['rubik_str'].to(self.device), test_batch['target'].to(self.device)
                 outputs = self.model(data.flatten(1), target)
                 self.test_loss += F.cross_entropy(outputs.logits.view(-1, self.vocab_size), target.view(-1), reduction='sum').item()  # sum up batch loss
+                # calcul du nombre de bon mouvements sur l'ensemble des séquences de résolutions
                 pred = outputs.logits.argmax(dim=-1)# get the index of the max log-probability
                 correct_elmts += (pred == target).sum()
                 total_elmts += len(torch.where(target != -100)[0])
+                # calcul du nombre de séquences de résolution entièrement correctes
+                pred[torch.where(target == -100)] = -100
                 correct_seqs += ((pred == target).sum(dim=-1) == pred.size(-1)).sum()
                 total_seqs += len(target)
         self.test_loss /= total_elmts
 
         print(f"\nTest set: Average loss: {self.test_loss:.4f}, " \
-            f"Pred. Accuracy: {correct_elmts}/{total_elmts}: {correct_elmts/total_elmts:.0f}, " \
-            f"Seq. Accuracy: {correct_seqs}/{total_seqs}: {correct_seqs/total_seqs:.0f}\n")
+            f"Pred. Accuracy: {correct_elmts}/{total_elmts}: {correct_elmts / total_elmts * 100:.2f}%, " \
+            f"Seq. Accuracy: {correct_seqs}/{total_seqs}: {correct_seqs / total_seqs * 100:.2f}%\n")
 
         if self.test_loss < self.min_val_loss:
             print("Saving model...")
