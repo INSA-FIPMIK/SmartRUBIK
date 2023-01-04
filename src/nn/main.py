@@ -88,7 +88,7 @@ def main():
         scheduler,
         num_epochs,
         device,
-        load_from_checkpoint='../../models/nn.pt'
+        load_from_checkpoint='../../models/nn2.pt'
     )
 
     #Training

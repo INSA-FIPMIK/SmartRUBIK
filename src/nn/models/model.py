@@ -19,7 +19,7 @@ class Net(nn.Module):
         self.config.pad_token_id = 26
         self.config.eos_token_id = 25
         self.config.bos_token_id = 24
-        self.config.d_model = 128
+        self.config.d_model = 256
         self.tf = BartForConditionalGeneration(self.config)
         print(self.tf)
         def count_parameters(model):

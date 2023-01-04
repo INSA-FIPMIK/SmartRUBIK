@@ -63,7 +63,7 @@ class Trainer ():
 
         if self.test_loss < self.min_val_loss:
             print("Saving model...")
-            torch.save(self.model.state_dict(), '../../models/nn.pt')
+            torch.save(self.model.state_dict(), '../../models/nn2.pt')
             self.min_val_loss = self.test_loss
     
     def fit (self, train_loader, test_loader):
