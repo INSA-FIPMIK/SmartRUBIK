@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, data):
+    def __init__(self, data, predict_or_train):
         self.data = data
         '''Conversion de la rubik_str et mvt_choisi en variables numeriques 0<x<1
         blanc = 0
@@ -15,33 +15,35 @@ class CustomDataset(torch.utils.data.Dataset):
         '''
         self.pos2float = {
             "w": 0,
-            "r": 0.2,
-            "g": 0.4,
-            "y": 0.6,
-            "o": 0.8,
-            "b": 1
+            "r": 1,
+            "g": 2,
+            "y": 3,
+            "o": 4,
+            "b": 5
         }
         # conversion move to target number
         self.mv2float = {
-            "U0": 0,
-            "D0": 1,
-            "F0": 2,
-            "B0": 3,
-            "R0": 4,
-            "L0": 5,
-            "U1": 6,
-            "D1": 7,
-            "F1": 8,
-            "B1": 9,
-            "R1": 10,
-            "L1": 11,
-            "U2": 12,
-            "D2": 13,
-            "F2": 14,
-            "B2": 15,
-            "R2": 16,
-            "L2": 17,
+            "U0": 6,
+            "D0": 7,
+            "F0": 8,
+            "B0": 9,
+            "R0": 10,
+            "L0": 11,
+            "U1": 12,
+            "D1": 13,
+            "F1": 14,
+            "B1": 15,
+            "R1": 16,
+            "L1": 17,
+            "U2": 18,
+            "D2": 19,
+            "F2": 20,
+            "B2": 21,
+            "R2": 22,
+            "L2": 23,
         }
+        
+        self.pdt_or_train = predict_or_train
 
     def __getitem__(self, idx):
         item = self.preprocess(self.data.iloc[idx])
@@ -53,11 +55,16 @@ class CustomDataset(torch.utils.data.Dataset):
     def preprocess(self, data):
         data_dict = {}
         rubik_str = data['rbk_str']
-        rubik_str = [self.pos2float[elmt] for elmt in rubik_str]
-        data_dict['rubik_str'] = torch.Tensor(rubik_str).float()
+        rubik_str = [24] + [self.pos2float[elmt] for elmt in rubik_str]
+        rubik_str += [26] * (100 - len(rubik_str))
+        data_dict['rubik_str'] = torch.Tensor(rubik_str).long()
         
-        target = data['mvt']
-        target = [self.mv2float[elmt] for elmt in target.split()]
-        # only take first move as target
-        data_dict['target'] = target[0]
+        
+        if self.pdt_or_train == 0:
+            target = data['mvt']
+            target = [24] + [self.mv2float[elmt] for elmt in target.split()] + [25]
+            target += [-100] * (100 - len(target))
+            # only take first move as target
+            #data_dict['target'] = target[0]
+            data_dict['target'] = torch.Tensor(target).long()
         return data_dict
