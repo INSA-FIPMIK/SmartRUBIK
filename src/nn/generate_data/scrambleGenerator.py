@@ -135,7 +135,7 @@ def main():
     i = 1
     choice = 0
 
-    # create datafrmae to store results
+    # create dataframe to store results
     ens_data = pd.DataFrame(columns=['mvt','rbk_str'], dtype='str')
     write_idx = 0
     file_idx = 0
