@@ -12,9 +12,9 @@ import pandas as pd
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 
-from preprocess.custom_dataset import CustomDataset
-from trainer import Trainer
-from models.model import Net
+from nn.preprocess.custom_dataset import CustomDataset
+from nn.trainer import Trainer
+from nn.models.model import Net
 
 random.seed(0)
 np.random.seed(0)
