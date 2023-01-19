@@ -4,8 +4,8 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 
-from models.model import Net
-from preprocess.custom_dataset import CustomDataset
+from nn.models.model import Net
+from nn.preprocess.custom_dataset import CustomDataset
 
 
 class Trainer ():
