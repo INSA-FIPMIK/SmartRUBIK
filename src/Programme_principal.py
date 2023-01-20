@@ -8,7 +8,7 @@ import random
 import cv2
 import numpy as np
 import pandas as pd 
-import placement_points_Boubou as supervision
+import placement_points_Boubou as Supervision
 import nn.main as main_nn
 
 
@@ -956,7 +956,7 @@ def c_solve():
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
   
     while not rbk_str.equals(cube_resolu) :
-        supervision
+        Supervision()
         prediction = main_nn
         prediction=str(prediction)
         prediction=prediction.replace("[","")
