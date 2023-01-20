@@ -956,7 +956,7 @@ def c_solve():
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
   
     while not rbk_str.equals(cube_resolu) :
-        Supervision()
+        Supervision
         prediction = main_nn
         prediction=str(prediction)
         prediction=prediction.replace("[","")
