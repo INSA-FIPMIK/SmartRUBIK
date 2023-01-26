@@ -104,9 +104,11 @@ def b_vision():
     print("blanc", sortie.count("w"))
 
     if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
-        button_solve.config(state="normal")
+        button_solve_nn.config(state="normal")
+        button_solve_kociemba.config(state="normal")
     else :
-        button_solve.config(state="disable")
+        button_solve_kociemba.config(state="disable")
+        button_solve_nn.config(state="disable")
 
 
 
@@ -141,12 +143,13 @@ def c_solve():
         
 # Control motor fonction : Send a letter of movement the arduino
 def b_motor(mov):
-	# Serial communication
-	ser.write(mov.encode('ascii'))
+    # Serial communication
+    ser.write(mov.encode('ascii'))
 
-	# Disable the solve button
-	button_solve.config(state="disable")
-	return
+    # Disable the solve button
+    button_solve_kociemba.config(state="disable")
+    button_solve_nn.config(state="disable")
+    return
 
 
 
@@ -202,13 +205,16 @@ credit.pack(side = BOTTOM)
 
 # Widgets Button
 button_scramble = Button(screen, text = 'SCRAMBLE',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_scramble, compound=BOTTOM, command=b_scramble)
-button_scramble.place(x=100, y=80)
+button_scramble.place(x=25, y=80)
 
-button_vision = Button(screen, text = 'VISION',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_vision, compound=BOTTOM, command=b_solve)
-button_vision.place(x=300, y=80)
+button_vision = Button(screen, text = 'VISION',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_vision, compound=BOTTOM, command=b_vision)
+button_vision.place(x=230, y=80)
 
-button_solve = Button(screen, text = 'SOLVE',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_solve, compound=BOTTOM, command=c_solve)
-button_solve.place(x=500, y=80)
+button_solve_nn = Button(screen, text = 'SOLVE WITH NEURONAL NETWORK',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=90, compound=BOTTOM, command=c_solve)
+button_solve_nn.place(x=430, y=80)
+
+button_solve_kociemba = Button(screen, text = 'SOLVE WITH KOCIEMBA',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=90, compound=BOTTOM, command=b_solve)
+button_solve_kociemba.place(x=430, y=180)
 
 # Display of movement list (of scramble)
 print_mvt = Label(screen, text='Moves : ', font=('Times New Roman', 11, 'bold'))

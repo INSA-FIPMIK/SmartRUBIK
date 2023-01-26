@@ -3,6 +3,7 @@ import csv
 import os
 import numpy as np
 import pandas as pd
+import time
 
 
 def get_disteud(a, b):
@@ -63,7 +64,6 @@ def miss_face (face) :
     j=0
     
     while(stop==0):
-        print("yo")
         suppr_face=[]
         for k in range (0,3):
             suppr_face.append(g_face[k])
@@ -98,10 +98,7 @@ def miss_face (face) :
     return(g_face[i])
 
 
-
-
-
-def click(event, x, y, flags, params):
+def click(event, x, y):
     c1 = 350
     c2 = 137
     coords2 = [    
@@ -122,8 +119,16 @@ def click(event, x, y, flags, params):
         print(point)
         evt = event  
 
-
-def gstreamer_pipeline(capture_width=3264, capture_height=2464, display_width=640, display_height=480, framerate=21, flip_method=2, sensor_id=0):
+        
+def gstreamer_pipeline(
+    capture_width=3264,
+    capture_height=2464,
+    display_width=640,
+    display_height=480,
+    framerate=21,
+    flip_method=2,
+    sensor_id=0,
+):
     return (
         "nvarguscamerasrc sensor_id=%d wbmode=3 tnr-mode=2 tnr-strength=1 ee-mode=2 ee-strength=1 ! "
         "video/x-raw(memory:NVMM), "
@@ -142,19 +147,16 @@ def gstreamer_pipeline(capture_width=3264, capture_height=2464, display_width=64
             display_width,
             display_height,
         )
-    )
-
-
-
-
-
+    )        
+        
+        
 
 def Supervision():
     
     
-    cv2.namedWindow("frame")
-    cv2.namedWindow("frame2")
-    cv2.setMouseCallback("frame", click)
+    #cv2.namedWindow("frame")
+    #cv2.namedWindow("frame2")
+    #cv2.setMouseCallback("frame", click)
 
     couleurs = {
         "center" : {
@@ -211,202 +213,203 @@ def Supervision():
     (c1-64, c2+76),(c1-17, c2+58),(c1+25, c2+41),(c1-61, c2+134),(c1-21, c2+117),(c1+22, c2+87),(c1-59, c2+190),(c1-19, c2+169),(c1+3, c2+162)
     ]
     
-    while 1:
-        _, frame = cam1.read()
-        _, frame2 = cam2.read()
+    #Mise en attente du programme pour mise au point des cameras
+    print("Mise au point des cameras...\n")
+    time.sleep(4)
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  #image en format HSV
-        hsv2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2HSV)  #image en format HSV
-        colors = []
-        colors2 = []
+    _, frame = cam1.read()
+    _, frame2 = cam2.read()
 
-        for k, coord in enumerate(coords):
-            cv2.circle(frame, coord, 1, (0,0,255),2)
-            blue = 0
-            green = 0
-            red = 0
-            cv2.rectangle(frame,(coord[0]-5,coord[1]-5),(coord[0]+5,coord[1]+5),(0,0,255),1)
-            for i in range(-5,5):
-                for j in range(-5,5):
-                    blue += hsv[coord[1]+i, coord[0]+j, 0]
-                    green += hsv[coord[1]+i, coord[0]+j, 1]
-                    red += hsv[coord[1]+i, coord[0]+j, 2]
-            blue /= 100
-            green /= 100
-            red /= 100
-            colors.append([blue, green, red])
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  #image en format HSV
+    hsv2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2HSV)  #image en format HSV
+    colors = []
+    colors2 = []
 
-        for k, coord in enumerate(coords2):
-            cv2.circle(frame2, coord, 1, (0,0,255),2)
-            blue = 0
-            green = 0
-            red = 0
-            cv2.rectangle(frame2,(coord[0]-5,coord[1]-5),(coord[0]+5,coord[1]+5),(0,0,255),1)
-            for i in range(-5,5):
-                for j in range(-5,5):
-                    blue += hsv2[coord[1]+i, coord[0]+j, 0]
-                    green += hsv2[coord[1]+i, coord[0]+j, 1]
-                    red += hsv2[coord[1]+i, coord[0]+j, 2]
-            blue /= 100
-            green /= 100
-            red /= 100
-            colors2.append([blue, green, red])
+    for k, coord in enumerate(coords):
+        cv2.circle(frame, coord, 1, (0,0,255),2)
+        blue = 0
+        green = 0
+        red = 0
+        cv2.rectangle(frame,(coord[0]-5,coord[1]-5),(coord[0]+5,coord[1]+5),(0,0,255),1)
+        for i in range(-5,5):
+            for j in range(-5,5):
+                blue += hsv[coord[1]+i, coord[0]+j, 0]
+                green += hsv[coord[1]+i, coord[0]+j, 1]
+                red += hsv[coord[1]+i, coord[0]+j, 2]
+        blue /= 100
+        green /= 100
+        red /= 100
+        colors.append([blue, green, red])
 
-        c = colors + colors2
+    for k, coord in enumerate(coords2):
+        cv2.circle(frame2, coord, 1, (0,0,255),2)
+        blue = 0
+        green = 0
+        red = 0
+        cv2.rectangle(frame2,(coord[0]-5,coord[1]-5),(coord[0]+5,coord[1]+5),(0,0,255),1)
+        for i in range(-5,5):
+            for j in range(-5,5):
+                blue += hsv2[coord[1]+i, coord[0]+j, 0]
+                green += hsv2[coord[1]+i, coord[0]+j, 1]
+                red += hsv2[coord[1]+i, coord[0]+j, 2]
+        blue /= 100
+        green /= 100
+        red /= 100
+        colors2.append([blue, green, red])
 
-        
-        #affichage de l'image
-        cv2.imshow("frame", frame)
-        cv2.moveWindow("frame", 0, 0)
-        cv2.imshow("frame2", frame2)
-        cv2.moveWindow("frame2", 700, 0)    
-
-        if cv2.waitKey(1) == ord('g'):
-            #cam2
-            sortie_d = []   #variables stockant la matrice de sortie
-            sortie_l = []
-            sortie_f = []
-            #cam1
-            sortie_u = []
-            sortie_r = []
-            sortie_b = []
-            sortie = []
-
-            if len(c) > 53 :
-                for ind in range(len(c)):
-                    dist = 1000  #initialisation des parametres permettant d'assigner une des 6 couleurs
-                    temp = 0
-                    f = "W"
-
-                    temp = get_disteud(c[ind], couleurs["center"]["R"]) #calcul distance euclidienne
-                    if temp < dist:
-                        f = "R"
-                        dist = temp
-                    temp = get_disteud(c[ind], couleurs["center"]["G"])
-                    if temp < dist:
-                        f = "G"
-                        dist = temp
-                    temp = get_disteud(c[ind], couleurs["center"]["B"])
-                    if temp < dist:
-                        f = "B"
-                        dist = temp
-                    temp = get_disteud(c[ind], couleurs["center"]["O"])
-                    if temp < dist:
-                        f = "O"
-                        dist = temp
-                    temp = get_disteud(c[ind], couleurs["center"]["Y"])
-                    if temp < dist:
-                        f = "Y"
-                        dist = temp
-                    temp = get_disteud(c[ind], couleurs["center"]["W"])
-                    if temp < dist:
-                        f = "W"
-                        dist = temp
-                    c[ind] = couleurs["values"][f] #assignation valeur couleurs
-
-                    if ind < 9:
-                        sortie_u.append(f)
-                    if ind > 8 and ind < 18:
-                        sortie_r.append(f)
-                    if ind > 17 and ind < 27:
-                        sortie_b.append(f)
-                    if ind > 26 and ind < 36:
-                        sortie_d.append(f)
-                    if ind > 35 and ind < 45:
-                        sortie_f.append(f)
-                    if ind > 44 and ind < 54:
-                        sortie_l.append(f)
-
-                sortie_d[4] = "Y"
-                sortie_l[4] = "G"
-                sortie_f[4] = "R"
-                sortie_u[4] = "W"
-                sortie_r[4] = "B"
-                sortie_b[4] = "O"
-
-                sortie = str(sortie_u) + str(sortie_r) + str(sortie_f) + str(sortie_d) + str(sortie_l) + str(sortie_b)
-
-                sortie = str(sortie)
-                sortie=sortie.replace("[","")
-                sortie=sortie.replace("]","")
-                sortie=sortie.replace(",","")
-                sortie=sortie.replace("'","")
-                sortie=sortie.replace(" ","")
-                sortie = sortie.lower()
+    c = colors + colors2
 
 
-                ####
-                _sortie = str(sortie_u) +"_"+ str(sortie_r) +"_"+ str(sortie_f) +"_"+ str(sortie_d) +"_"+ str(sortie_l) +"_"+ str(sortie_b)
-
-                _sortie = str(_sortie)
-                _sortie=_sortie.replace("[","")
-                _sortie=_sortie.replace("]","")
-                _sortie=_sortie.replace(",","")
-                _sortie=_sortie.replace("'","")
-                _sortie=_sortie.replace(" ","")
-                _sortie = _sortie.lower()
-                print(_sortie)
-                ####
-
-
-
-
-                sortiee=sortie[0:6]+"X"+sortie[7:15]+"X"+sortie[16:20]+"X"+sortie[21:35]+"X"+"X"+sortie[37:53]+"X"
-                print(sortiee)
-
-
-
-                face6=miss_face(["?",sortie[38],sortie[18]])
-                face15=miss_face([sortie[29],"?",sortie[26]])
-                face20=miss_face([sortie[8],"?",sortie[9]])
-                face35=miss_face(["?",sortie[51],sortie[17]])
-                face36=miss_face([sortie[0],sortie[47],"?"])
-                face53=miss_face([sortie[33],sortie[42],"?"])
-
-                sortie=sortie[0:6]+face6+sortie[7:15]+face15+sortie[16:20]+face20+sortie[21:35]+face35+face36+sortie[37:53]+face53
-
-                print("***")
-                print(face6)
-                print(face15)
-                print(face20)
-                print(face35)
-                print(face36)
-                print(face53)
-
-                print(sortie)
-
-                print("rouge", sortie.count("r"))
-                print("bleu", sortie.count("b"))
-                print("orange", sortie.count("o"))
-                print("jaune", sortie.count("y"))
-                print("vert", sortie.count("g"))
-                print("blanc", sortie.count("w"))
-
-                #dessin des faces pour une meilleure visualisation
-                cube1 = cv2.bitwise_and(frame, 0)  #creation image visualisation du cube
-                cube2 = cv2.bitwise_and(frame2, 0)
-                drawface(cube1, 75, 10, 50, sortie_u, couleurs)
-                drawface(cube1, 2, 170, 50, sortie_r, couleurs)
-                drawface(cube1, 157, 170, 50, sortie_b, couleurs)
-                drawface(cube2, 75, 10, 50, sortie_d, couleurs)
-                drawface(cube2, 2, 170, 50, sortie_f, couleurs)
-                drawface(cube2, 157, 170, 50, sortie_l, couleurs)
-                cv2.imshow("cube", cube1)
-                cv2.moveWindow("cube", 0, 500)
-                cv2.imshow("cube2", cube2)
-                cv2.moveWindow("cube2", 700, 500)
-
-
-
-        if cv2.waitKey(1) == ord('r'):
-            Data = pd.DataFrame(columns=['rbk_str'], dtype='str')
-            Data.loc['rbk_str'] = str(sortie)
-            Data.to_csv(os.path.join("../data/generated_data/prediction.csv"))
-
-
-
-        if cv2.waitKey(1) == ord('q'):
-            cv2.destroyAllWindows()
-            break
+    #affichage de l'image
+    cv2.imshow("frame", frame)
+    cv2.moveWindow("frame", 0, 0)
+    cv2.imshow("frame2", frame2)
+    cv2.moveWindow("frame2", 700, 0)    
     
+
+    #cam2
+    sortie_d = []   #variables stockant la matrice de sortie
+    sortie_l = []
+    sortie_f = []
+    #cam1
+    sortie_u = []
+    sortie_r = []
+    sortie_b = []
+    sortie = []
+
+    if len(c) > 53 :
+        for ind in range(len(c)):
+            dist = 1000  #initialisation des parametres permettant d'assigner une des 6 couleurs
+            temp = 0
+            f = "W"
+
+            temp = get_disteud(c[ind], couleurs["center"]["R"]) #calcul distance euclidienne
+            if temp < dist:
+                f = "R"
+                dist = temp
+            temp = get_disteud(c[ind], couleurs["center"]["G"])
+            if temp < dist:
+                f = "G"
+                dist = temp
+            temp = get_disteud(c[ind], couleurs["center"]["B"])
+            if temp < dist:
+                f = "B"
+                dist = temp
+            temp = get_disteud(c[ind], couleurs["center"]["O"])
+            if temp < dist:
+                f = "O"
+                dist = temp
+            temp = get_disteud(c[ind], couleurs["center"]["Y"])
+            if temp < dist:
+                f = "Y"
+                dist = temp
+            temp = get_disteud(c[ind], couleurs["center"]["W"])
+            if temp < dist:
+                f = "W"
+                dist = temp
+            c[ind] = couleurs["values"][f] #assignation valeur couleurs
+
+            if ind < 9:
+                sortie_u.append(f)
+            if ind > 8 and ind < 18:
+                sortie_r.append(f)
+            if ind > 17 and ind < 27:
+                sortie_b.append(f)
+            if ind > 26 and ind < 36:
+                sortie_d.append(f)
+            if ind > 35 and ind < 45:
+                sortie_f.append(f)
+            if ind > 44 and ind < 54:
+                sortie_l.append(f)
+
+        sortie_d[4] = "Y"
+        sortie_l[4] = "G"
+        sortie_f[4] = "R"
+        sortie_u[4] = "W"
+        sortie_r[4] = "B"
+        sortie_b[4] = "O"
+
+        sortie = str(sortie_u) + str(sortie_r) + str(sortie_f) + str(sortie_d) + str(sortie_l) + str(sortie_b)
+
+        sortie = str(sortie)
+        sortie=sortie.replace("[","")
+        sortie=sortie.replace("]","")
+        sortie=sortie.replace(",","")
+        sortie=sortie.replace("'","")
+        sortie=sortie.replace(" ","")
+        sortie = sortie.lower()
+
+
+        ####
+        _sortie = str(sortie_u) +"_"+ str(sortie_r) +"_"+ str(sortie_f) +"_"+ str(sortie_d) +"_"+ str(sortie_l) +"_"+ str(sortie_b)
+
+        _sortie = str(_sortie)
+        _sortie=_sortie.replace("[","")
+        _sortie=_sortie.replace("]","")
+        _sortie=_sortie.replace(",","")
+        _sortie=_sortie.replace("'","")
+        _sortie=_sortie.replace(" ","")
+        _sortie = _sortie.lower()
+        print(_sortie)
+        ####
+
+
+
+
+        sortiee=sortie[0:6]+"X"+sortie[7:15]+"X"+sortie[16:20]+"X"+sortie[21:35]+"X"+"X"+sortie[37:53]+"X"
+        print(sortiee)
+
+
+
+        face6=miss_face(["?",sortie[38],sortie[18]])
+        face15=miss_face([sortie[29],"?",sortie[26]])
+        face20=miss_face([sortie[8],"?",sortie[9]])
+        face35=miss_face(["?",sortie[51],sortie[17]])
+        face36=miss_face([sortie[0],sortie[47],"?"])
+        face53=miss_face([sortie[33],sortie[42],"?"])
+
+        sortie=sortie[0:6]+face6+sortie[7:15]+face15+sortie[16:20]+face20+sortie[21:35]+face35+face36+sortie[37:53]+face53
+
+        print("***")
+        print(face6)
+        print(face15)
+        print(face20)
+        print(face35)
+        print(face36)
+        print(face53)
+
+        print(sortie)
+
+        print("rouge", sortie.count("r"))
+        print("bleu", sortie.count("b"))
+        print("orange", sortie.count("o"))
+        print("jaune", sortie.count("y"))
+        print("vert", sortie.count("g"))
+        print("blanc", sortie.count("w"))
+
+        #dessin des faces pour une meilleure visualisation
+        cube1 = cv2.bitwise_and(frame, 0)  #creation image visualisation du cube
+        cube2 = cv2.bitwise_and(frame2, 0)
+        drawface(cube1, 75, 10, 50, sortie_u, couleurs)
+        drawface(cube1, 2, 170, 50, sortie_r, couleurs)
+        drawface(cube1, 157, 170, 50, sortie_b, couleurs)
+        drawface(cube2, 75, 10, 50, sortie_d, couleurs)
+        drawface(cube2, 2, 170, 50, sortie_f, couleurs)
+        drawface(cube2, 157, 170, 50, sortie_l, couleurs)
+        cv2.imshow("cube", cube1)
+        cv2.moveWindow("cube", 0, 500)
+        cv2.imshow("cube2", cube2)
+        cv2.moveWindow("cube2", 700, 500)
+
+
+
+
+    Data = pd.DataFrame(columns=['rbk_str'], dtype='str')
+    Data.loc['rbk_str'] = str(sortie)
+    Data.to_csv(os.path.join("../data/generated_data/prediction.csv"))
+
+
+    cv2.destroyAllWindows()
+
+
     return str(sortie)

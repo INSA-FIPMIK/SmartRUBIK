@@ -1,4 +1,9 @@
 import cv2
+
+'''Ce programme permet de verifer si les cameras sont correctement connectes et reconnues'''
+
+
+
 def gstreamer_pipeline(
     sensor_id=0,
     capture_width=1080,
