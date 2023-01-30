@@ -103,14 +103,14 @@ def b_vision():
     print("vert", sortie.count("g"))
     print("blanc", sortie.count("w"))
 
-    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
+    '''    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
         button_solve_nn.config(state="normal")
         button_solve_kociemba.config(state="normal")
     else :
         button_solve_kociemba.config(state="disable")
         button_solve_nn.config(state="disable")
 
-
+    '''
 
 # Solve fonction : use of kociemba library
 def b_solve():
@@ -122,8 +122,9 @@ def c_solve():
     list_mvt = ["r","R","l","L","u","U","b","B","f","F","d","D"]
     cube_resolu = pd.DataFrame(data ={'wwwwwwwwwrrrrrrrrrgggggggggyyyyyyyyyooooooooobbbbbbbbb'})
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
+    trop_long = 0
   
-    while not rbk_str.equals(cube_resolu) :
+    while not rbk_str.equals(cube_resolu) or trop_long < 20 :
         #Supervision()
         prediction = main_nn
         prediction = str(prediction)
@@ -134,7 +135,7 @@ def c_solve():
         ser.write(prediction.encode('ascii'))
         
         rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
-        
+        trop_long +=1
     # Disable the solve button
     button_solve.config(state="disable")     
         
@@ -196,7 +197,7 @@ image_moves = PhotoImage(file='../data/images/moves.png')
 
 
 # Widgets text
-titre = Label(screen, text = "RUBIK'S CUBE SOLVER", font=('Times New Roman', 25,'bold'))
+titre = Label(screen, text = "SMART RUBIK", font=('Times New Roman', 25,'bold'))
 titre.pack(side = TOP)
 
 credit = Label(screen, text = "Honoré Bonnet - Boubou Gaye Soumare - Anatole Surel - 2022/2023", font=('Times New Roman', 11))
@@ -210,11 +211,11 @@ button_scramble.place(x=25, y=80)
 button_vision = Button(screen, text = 'VISION',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_vision, compound=BOTTOM, command=b_vision)
 button_vision.place(x=230, y=80)
 
-button_solve_nn = Button(screen, text = 'SOLVE WITH NEURONAL NETWORK',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=90, compound=BOTTOM, command=c_solve)
+button_solve_nn = Button(screen, text = 'SOLVE WITH NEURONAL NETWORK',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=c_solve)
 button_solve_nn.place(x=430, y=80)
 
-button_solve_kociemba = Button(screen, text = 'SOLVE WITH KOCIEMBA',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=90, compound=BOTTOM, command=b_solve)
-button_solve_kociemba.place(x=430, y=180)
+button_solve_kociemba = Button(screen, text = 'SOLVE WITH KOCIEMBA',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=b_solve)
+button_solve_kociemba.place(x=430, y=170)
 
 # Display of movement list (of scramble)
 print_mvt = Label(screen, text='Moves : ', font=('Times New Roman', 11, 'bold'))

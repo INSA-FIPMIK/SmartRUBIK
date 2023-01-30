@@ -106,8 +106,8 @@ def click(event, x, y):
     (c1-106, c2+195),(c1-150, c2+167),(c1-183, c2+164),(c1-111, c2+136),(c1-150, c2+112),(c1-197, c2+90),(c1-117, c2+75),(c1-162, c2+59),(c1-196, c2+46),
     (c1+3, c2+162),(c1-19, c2+169),(c1-59, c2+190),(c1+18, c2+87),(c1-21, c2+117),(c1-61, c2+134),(c1+21, c2+41),(c1-17, c2+58),(c1-56, c2+68)
     ]
-    c1 = 380
-    c2 = 145
+    c1 = 405
+    c2 = 130
     coords = [    
     (c1, c2),(c1-42, c2+14),(c1-88, c2+29),(c1-46, c2-8),(c1-88, c2+4),(c1-139, c2+13),(c1-63, c2-17),(c1-129, c2-8),(c1-174, c2),
     (c1-196, c2+46),(c1-162, c2+59),(c1-115, c2+77),(c1-197, c2+90),(c1-150, c2+112),(c1-111, c2+136),(c1-183, c2+164),(c1-150, c2+167),(c1-106, c2+195),
@@ -118,6 +118,9 @@ def click(event, x, y):
         coords.append(point)
         print(point)
         evt = event  
+        
+    cv2.destroyAllWindows()
+
 
         
 def gstreamer_pipeline(
@@ -154,9 +157,9 @@ def gstreamer_pipeline(
 def Supervision():
     
     
-    #cv2.namedWindow("frame")
-    #cv2.namedWindow("frame2")
-    #cv2.setMouseCallback("frame", click)
+    cv2.namedWindow("frame")
+    cv2.namedWindow("frame2")
+    cv2.setMouseCallback("frame", click)
 
     couleurs = {
         "center" : {
@@ -380,13 +383,6 @@ def Supervision():
 
         print(sortie)
 
-        print("rouge", sortie.count("r"))
-        print("bleu", sortie.count("b"))
-        print("orange", sortie.count("o"))
-        print("jaune", sortie.count("y"))
-        print("vert", sortie.count("g"))
-        print("blanc", sortie.count("w"))
-
         #dessin des faces pour une meilleure visualisation
         cube1 = cv2.bitwise_and(frame, 0)  #creation image visualisation du cube
         cube2 = cv2.bitwise_and(frame2, 0)
@@ -408,8 +404,6 @@ def Supervision():
     Data.loc['rbk_str'] = str(sortie)
     Data.to_csv(os.path.join("../data/generated_data/prediction.csv"))
 
-
+    cv2.setMouseCallback("frame", click)
     cv2.destroyAllWindows()
-
-
     return str(sortie)
