@@ -88,44 +88,33 @@ def b_scramble():
 def b_vision():
         
     sortie = Supervision()
-
-
-
-    #ESSAI
-    cube_resolu = pd.DataFrame(data ={'wwwwwwwwwrrrrrrrrrgggggggggyyyyyyyyyooooooooobbbbbbbbb'}, dtype='str')
-    rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
-    rbk_str = rbk_str.iloc[0]['rbk_str']
-    if rbk_str.equals(cube_resolu) == 1 :
-		print("CUBE RESOLU")
-
-		
-		
-    '''    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
+   
+    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
         button_solve_nn.config(state="normal")
         button_solve_kociemba.config(state="normal")
     else :
         button_solve_kociemba.config(state="disable")
         button_solve_nn.config(state="disable")
 
-    '''
 
-	
+        
 # Solve fonction : use of kociemba library
 def b_solve():
-	solve_kociemba()
+    solve_kociemba()
 
 
 # Solve fonction with a neuronal network
 def c_solve():
     list_mvt = ["r","R","l","L","u","U","b","B","f","F","d","D"]
-    cube_resolu = pd.DataFrame(data ={'wwwwwwwwwrrrrrrrrrgggggggggyyyyyyyyyooooooooobbbbbbbbb'}, dtype='str')
+    cube_resolu = 'wwwwwwwwwbbbbbbbbbrrrrrrrrryyyyyyyyygggggggggooooooooo'
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
+    rbk_str = rbk_str.iloc[0]['rbk_str']
     trop_long = 0
  
 
     button_solve.config(state="disable")
 
-    while not rbk_str.equals(cube_resolu) or trop_long < 10 :
+    while rbk_str == cube_resolu or trop_long > 10 :
         
         prediction = main_nn
         prediction = str(prediction)
@@ -134,19 +123,18 @@ def c_solve():
         prediction = prediction.replace(",","")
         
         ser.write(prediction.encode('ascii'))
-	
+
         Supervision()
         rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
-	rbk_str = rbk_str.iloc[0]['rbk_str']
+        rbk_str = rbk_str.iloc[0]['rbk_str']
         trop_long +=1
-	
+
 
     if trop_long < 10 :
-	print("CUBE RESOLU")
-	
+        print("CUBE RESOLU")
     else:
-	print("Probleme cube non resolvable")
-	
+        print("Probleme cube non resolvable")
+
                
         
 # Control motor fonction : Send a letter of movement the arduino

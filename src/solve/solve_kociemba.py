@@ -1,19 +1,25 @@
 import kociemba
 import pandas as pd
+import serial
 
+
+ser = serial.Serial("/dev/ttyUSB0",9600,timeout=10)
 
 def solve_kociemba():
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
     cube = rbk_str.iloc[0]['rbk_str']
-    print(cube)
+
     cube=cube.replace('w','U')
     cube=cube.replace('b','R')
     cube=cube.replace('r','F')
     cube=cube.replace('y','D')
     cube=cube.replace('g','L')
     cube=cube.replace('o','B')
-    print(cube)
+   
+    
     sol=kociemba.solve(cube)
+    
+    
     print("La solution est:")
     print(sol)
 
@@ -45,12 +51,7 @@ def solve_kociemba():
     sol=sol.replace(" ","")
     sol = '&'+sol+'#'
 
-    print(sol)
-    label_sol.config(text='Solution : ' + sol)
-
     # Serial communication
-    #ser.write(sol.encode('ascii'))
+    ser.write(sol.encode('ascii'))
 
-    # Disable the solve button
-    button_solve.config(state="disable")
     return

@@ -22,36 +22,32 @@ print("\nConnexion reussie....\n")
 
 
 def mvmt_solution(a):
+	sol = kociemba.solve(a)
 
-    sol = kociemba.solve(a)
-    sol=sol.replace("R2","RR")
-    sol=sol.replace("L2","LL")
-    sol=sol.replace("D2","DD")
-    sol=sol.replace("B2","BB")
-    sol=sol.replace("F2","FF")
-    sol=sol.replace("U2","UU")
+	sol=sol.replace("R2","RR")
+	sol=sol.replace("L2","LL")
+	sol=sol.replace("D2","DD")
+	sol=sol.replace("B2","BB")
+	sol=sol.replace("F2","FF")
+	sol=sol.replace("U2","UU")
 
-    sol=sol.replace("R'","H")
-    sol=sol.replace("R","r")
-    sol=sol.replace("H","R")
+	sol=sol.replace("R'","H")
+	sol=sol.replace("R","r")
+	sol=sol.replace("H","R")
+	
+	sol=sol.replace("L'","l")
+	sol=sol.replace("U'","u")
+	sol=sol.replace("D'","H")
+	sol=sol.replace("D","d")
+	sol=sol.replace("H","D")
+	sol=sol.replace("F'","H")
+	sol=sol.replace("F","F")
+	sol=sol.replace("H","f")
+	sol=sol.replace("B'","b")
 
-    sol=sol.replace("L'","l")
+	sol=sol.replace(" ","")
 
-    sol=sol.replace("U'","u")
-
-    sol=sol.replace("D'","H")
-    sol=sol.replace("D","d")
-    sol=sol.replace("H","D")
-
-    sol=sol.replace("F'","H")
-    sol=sol.replace("F","F")
-    sol=sol.replace("H","f")
-
-    sol=sol.replace("B'","b")
-
-    sol=sol.replace(" ","")
-
-    return sol
+	return sol
 
 
 # Scramble fonction : Generated a list of random movements to send to the arduino
@@ -82,11 +78,8 @@ def b_scramble():
 	ser.write(mvt_random.encode('ascii'))
 
 	# Disable the solve button
-	#button_solve.config(state="disable")
+	button_solve.config(state="disable")
 
-
-	"""Pilotage du jumeau en même temps"""
-	str_mvt=''.join(mvt_random)
 	return
 
 
@@ -95,37 +88,34 @@ def b_scramble():
 def b_vision():
         
     sortie = Supervision()
-    print(sortie)
-    print("rouge", sortie.count("r"))
-    print("bleu", sortie.count("b"))
-    print("orange", sortie.count("o"))
-    print("jaune", sortie.count("y"))
-    print("vert", sortie.count("g"))
-    print("blanc", sortie.count("w"))
-
-    '''    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
+   
+    if sortie.count("r")==9 and sortie.count("b") == 9 and sortie.count("o")==9 and  sortie.count("y") ==9 and sortie.count("g")==9 and sortie.count("w") ==9 :
         button_solve_nn.config(state="normal")
         button_solve_kociemba.config(state="normal")
     else :
         button_solve_kociemba.config(state="disable")
         button_solve_nn.config(state="disable")
 
-    '''
 
+        
 # Solve fonction : use of kociemba library
 def b_solve():
-	solve_kociemba()
+    solve_kociemba()
 
 
 # Solve fonction with a neuronal network
 def c_solve():
     list_mvt = ["r","R","l","L","u","U","b","B","f","F","d","D"]
-    cube_resolu = pd.DataFrame(data ={'wwwwwwwwwrrrrrrrrrgggggggggyyyyyyyyyooooooooobbbbbbbbb'})
+    cube_resolu = 'wwwwwwwwwbbbbbbbbbrrrrrrrrryyyyyyyyygggggggggooooooooo'
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
+    rbk_str = rbk_str.iloc[0]['rbk_str']
     trop_long = 0
-  
-    while not rbk_str.equals(cube_resolu) or trop_long < 20 :
-        #Supervision()
+ 
+
+    button_solve.config(state="disable")
+
+    while rbk_str == cube_resolu or trop_long > 10 :
+        
         prediction = main_nn
         prediction = str(prediction)
         prediction = prediction.replace("[","")
@@ -133,14 +123,19 @@ def c_solve():
         prediction = prediction.replace(",","")
         
         ser.write(prediction.encode('ascii'))
-        
+
+        Supervision()
         rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
+        rbk_str = rbk_str.iloc[0]['rbk_str']
         trop_long +=1
-    # Disable the solve button
-    button_solve.config(state="disable")     
-        
-        
-        
+
+
+    if trop_long < 10 :
+        print("CUBE RESOLU")
+    else:
+        print("Probleme cube non resolvable")
+
+               
         
 # Control motor fonction : Send a letter of movement the arduino
 def b_motor(mov):
@@ -211,10 +206,10 @@ button_scramble.place(x=25, y=80)
 button_vision = Button(screen, text = 'VISION',font=font_perso,bg='#cecece',activebackground='#cecece', width=180, height=180, image=image_vision, compound=BOTTOM, command=b_vision)
 button_vision.place(x=230, y=80)
 
-button_solve_nn = Button(screen, text = 'SOLVE WITH NEURONAL NETWORK',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=c_solve)
+button_solve_nn = Button(screen, text = 'NEURONAL NET',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=c_solve)
 button_solve_nn.place(x=430, y=80)
 
-button_solve_kociemba = Button(screen, text = 'SOLVE WITH KOCIEMBA',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=b_solve)
+button_solve_kociemba = Button(screen, text = 'KOCIEMBA',font=font_perso,bg='#cecece',activebackground='#cecece', width=200, height=90, image=image_solve, compound=BOTTOM, command=b_solve)
 button_solve_kociemba.place(x=430, y=170)
 
 # Display of movement list (of scramble)
