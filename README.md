@@ -67,8 +67,3 @@ Sous-programme pour résoudre le cube via la bibliothèque Kociemba
 
 ### Programmes principal : 
 - Affiche l'interface homme machine pour mélanger le rubik's cube, effectuer des mouvements manuellement, résoudre le rubik's cube
-
-### Visualisation : interface de communication avec les caméras.
-
-
-
