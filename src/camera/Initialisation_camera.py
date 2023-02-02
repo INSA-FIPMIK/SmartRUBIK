@@ -4,8 +4,12 @@ import csv
 import pandas as pd
 import os 
 
-def nothing(x):
-    pass
+"""Ce programme permet d'initialiser les cameras en ayant une visualisation de celle-ci
+Tous ce fait manuellement :
+touche G pour figer les données
+touche R pour enregistrer les données dans prediction.csv
+touche Q pour quitter"""
+
 
 def get_disteud(a, b):
     t = np.linalg.norm([abs(a_elt - b_elt) for a_elt, b_elt in zip(a, b)])
@@ -30,7 +34,6 @@ def drawface(cube, x, y, p, c):
     cv2.rectangle(cube, (x+p*3, y+p*3), (x+p*4, y+p*4), couleurs["values"][c[8]], -1)
 
 def miss_face (face) :
-    print("yes")
     if (face[2]=='w') or (face[2] == 'y') :
         g_face=[face[2],face[0],face[1]]
     else :
@@ -69,7 +72,6 @@ def miss_face (face) :
     j=0
     
     while(stop==0):
-        print("yo")
         suppr_face=[]
         for k in range (0,3):
             suppr_face.append(g_face[k])
@@ -99,7 +101,7 @@ def miss_face (face) :
                 g_face[1]="H"
             if g_face[2] == '?' :
                 g_face[2]="H"
-            print("oupss")
+
             break
         
     return(g_face[i])
@@ -154,9 +156,9 @@ couleurs = {
         "R": [0, 0, 255],
         "G": [0, 255, 0],
         "W": [255, 255, 255],
-		"B": [255, 0, 0],
-		"O": [0, 100, 255],
-		"Y": [0, 255, 255]
+        "B": [255, 0, 0],
+        "O": [0, 100, 255],
+        "Y": [0, 255, 255]
     },
     "lower" : {
         "R": [138, 141, 83],
@@ -319,10 +321,10 @@ while 1:
                     sortie_l.append(f)
             
             sortie_d[4] = "Y"
-            sortie_l[4] = "G"
+            sortie_l[4] = "B"
             sortie_f[4] = "R"
             sortie_u[4] = "W"
-            sortie_r[4] = "B"
+            sortie_r[4] = "G"
             sortie_b[4] = "O"
             
             sortie = str(sortie_u) + str(sortie_r) + str(sortie_f) + str(sortie_d) + str(sortie_l) + str(sortie_b)
@@ -346,17 +348,9 @@ while 1:
             _sortie=_sortie.replace("'","")
             _sortie=_sortie.replace(" ","")
             _sortie = _sortie.lower()
-            print(_sortie)
             ####
             
-            
-            
-            
-            sortiee=sortie[0:6]+"X"+sortie[7:15]+"X"+sortie[16:20]+"X"+sortie[21:35]+"X"+"X"+sortie[37:53]+"X"
-            print(sortiee)
-
-
-            
+                      
             face6=miss_face(["?",sortie[38],sortie[18]])
             face15=miss_face([sortie[29],"?",sortie[26]])
             face20=miss_face([sortie[8],"?",sortie[9]])
@@ -365,18 +359,9 @@ while 1:
             face53=miss_face([sortie[33],sortie[42],"?"])
             
             sortie=sortie[0:6]+face6+sortie[7:15]+face15+sortie[16:20]+face20+sortie[21:35]+face35+face36+sortie[37:53]+face53
-            
-            print("***")
-            print(face6)
-            print(face15)
-            print(face20)
-            print(face35)
-            print(face36)
-            print(face53)
-            
+
             print(sortie)
-            #print("woggworywogwrbbgbrgrbrrboryywrwywgbybywgggooboyryowboy")
-            
+
                         
             print("rouge", sortie.count("r"))
             print("bleu", sortie.count("b"))
@@ -404,7 +389,8 @@ while 1:
     if cv2.waitKey(1) == ord('r'):
         Data = pd.DataFrame(columns=['rbk_str'], dtype='str')
         Data.loc['rbk_str'] = str(sortie)
-        Data.to_csv(os.path.join("../data/generated_data/prediction.csv"))
+        Data.to_csv(os.path.join("../../data/generated_data/prediction.csv"))
+        print("RBK_STR saved in prediction.csv....")
         
       
         

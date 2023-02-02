@@ -110,19 +110,16 @@ def c_solve():
     rbk_str = pd.read_csv('../data/generated_data/prediction.csv')
     rbk_str = rbk_str.iloc[0]['rbk_str']
     trop_long = 0
- 
 
-    button_solve.config(state="disable")
-
-    while rbk_str == cube_resolu or trop_long > 10 :
+    while rbk_str != cube_resolu or trop_long < 10 :
         
         prediction = main_nn
         prediction = str(prediction)
         prediction = prediction.replace("[","")
         prediction = prediction.replace("]","")
         prediction = prediction.replace(",","")
-        
-        ser.write(prediction.encode('ascii'))
+        print("Les mouvements genere par le reseau de neuronne sont :", prediction, "\n")
+        #ser.write(prediction.encode('ascii'))
 
         Supervision()
         rbk_str = pd.read_csv('../data/generated_data/prediction.csv')

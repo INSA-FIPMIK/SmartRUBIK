@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import time
 
+"""Programme appele par le programme principal pour effectuer la vision de maniere automatique"""
+
 
 def get_disteud(a, b):
     t = np.linalg.norm([abs(a_elt - b_elt) for a_elt, b_elt in zip(a, b)])
@@ -25,7 +27,6 @@ def drawface(cube, x, y, p, c, couleurs):
     cv2.rectangle(cube, (x+p*3, y+p*3), (x+p*4, y+p*4), couleurs["values"][c[8]], -1)
 
 def miss_face (face) :
-    print("yes")
     if (face[2]=='w') or (face[2] == 'y') :
         g_face=[face[2],face[0],face[1]]
     else :
@@ -326,10 +327,10 @@ def Supervision():
                 sortie_l.append(f)
 
         sortie_d[4] = "Y"
-        sortie_l[4] = "G"
+        sortie_l[4] = "B"
         sortie_f[4] = "R"
         sortie_u[4] = "W"
-        sortie_r[4] = "B"
+        sortie_r[4] = "G"
         sortie_b[4] = "O"
 
         sortie = str(sortie_u) + str(sortie_r) + str(sortie_f) + str(sortie_d) + str(sortie_l) + str(sortie_b)
@@ -353,15 +354,6 @@ def Supervision():
         _sortie=_sortie.replace("'","")
         _sortie=_sortie.replace(" ","")
         _sortie = _sortie.lower()
-        print(_sortie)
-        ####
-
-
-
-
-        sortiee=sortie[0:6]+"X"+sortie[7:15]+"X"+sortie[16:20]+"X"+sortie[21:35]+"X"+"X"+sortie[37:53]+"X"
-        print(sortiee)
-
 
 
         face6=miss_face(["?",sortie[38],sortie[18]])
@@ -373,36 +365,12 @@ def Supervision():
 
         sortie=sortie[0:6]+face6+sortie[7:15]+face15+sortie[16:20]+face20+sortie[21:35]+face35+face36+sortie[37:53]+face53
 
-        print("***")
-        print(face6)
-        print(face15)
-        print(face20)
-        print(face35)
-        print(face36)
-        print(face53)
-
-        print(sortie)
-
-        #dessin des faces pour une meilleure visualisation
-        cube1 = cv2.bitwise_and(frame, 0)  #creation image visualisation du cube
-        cube2 = cv2.bitwise_and(frame2, 0)
-        drawface(cube1, 75, 10, 50, sortie_u, couleurs)
-        drawface(cube1, 2, 170, 50, sortie_r, couleurs)
-        drawface(cube1, 157, 170, 50, sortie_b, couleurs)
-        drawface(cube2, 75, 10, 50, sortie_d, couleurs)
-        drawface(cube2, 2, 170, 50, sortie_f, couleurs)
-        drawface(cube2, 157, 170, 50, sortie_l, couleurs)
-        cv2.imshow("cube", cube1)
-        cv2.moveWindow("cube", 0, 500)
-        cv2.imshow("cube2", cube2)
-        cv2.moveWindow("cube2", 700, 500)
-
-
-
+    print("La rubik string est : ",sortie, "\n")
 
     Data = pd.DataFrame(columns=['rbk_str'], dtype='str')
     Data.loc['rbk_str'] = str(sortie)
     Data.to_csv(os.path.join("../data/generated_data/prediction.csv"))
+    print("RBK_STR saved in prediction.csv....")
 
     cv2.setMouseCallback("frame", click)
     cv2.destroyAllWindows()
