@@ -73,7 +73,7 @@ Sous-programme pour résoudre le cube via la bibliothèque Kociemba
 
 
 
-## Les axes d'amélioration pour les prochaines années
+# Les axes d'amélioration pour les prochaines années
 - 1 --> Améliorer l'IHM :
     - Boutons à refaire
     - Fonction moteur à modifier (front ne correspond pas au front, etc...) 
