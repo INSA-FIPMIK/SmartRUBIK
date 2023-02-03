@@ -19,7 +19,9 @@
 - 9 : Lancer le programme "Programme Principal" du dossier src pour avoir l'IHM
 
 
-## Créé à partir de https://github.com/nlpTRIZ/jetson_docker_X_forwarding
+
+## Déscription du code
+**Créé à partir de https://github.com/nlpTRIZ/jetson_docker_X_forwarding**
 
 ## En supplément des bibliothèques présentes depuis le lien github ci-dessus, le docker du projet SmartRubik contient :
 - Streamlit (Pour l'IHM)
@@ -67,3 +69,21 @@ Sous-programme pour résoudre le cube via la bibliothèque Kociemba
 
 ### Programmes principal : 
 - Affiche l'interface homme machine pour mélanger le rubik's cube, effectuer des mouvements manuellement, résoudre le rubik's cube
+
+
+
+
+## Les axes d'amélioration pour les prochaines années
+- 1 --> Améliorer l'IHM :
+    - Boutons à refaire
+    - Fonction moteur à modifier (front ne correspond pas au front, etc...) 
+- 2 --> Améliorer la vision pour avoir plus de précision 
+    - Modifcation des points de prise de couleurs
+    - Changement de caméra ? Manque de rapidité, de contraste ou de luminosité ?
+- 3 --> Vérifier l'implémentation du réseau de neuronne dans la fonction "c_solve" :
+    - Prise d'information de la Rubik string par correctement automatisé
+    - Boucle while à revoir ?
+
+
+
+
